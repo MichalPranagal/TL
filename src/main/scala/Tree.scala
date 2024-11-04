@@ -14,6 +14,12 @@ object ID:
 object Tree:
   private val TOKENS_SPLIT_REGEX = "\\s+|\\b|(?<=[()])"
 
+  def replace(tree: Tree, searchTree: Tree, replacement: Tree): Tree =
+    if tree == searchTree then replacement
+    else tree match
+      case Node(children) => Node(children.map { replace(_, searchTree, replacement) })
+      case ID(_) => tree
+
   def parse(treeStr: String): Either[String, Tree] =
     val tokens = treeStr.split(TOKENS_SPLIT_REGEX).filter(_.nonEmpty).toList
     parseTokens(tokens)
